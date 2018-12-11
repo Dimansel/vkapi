@@ -3,7 +3,7 @@
 This simple tool allows one to use VK API comfortably via implemented authorization routine and abstraction layer for methods usage in a form of a class
 
 ## Usage examples
-```
+```python
 from vkapi import VkAPI, VkAuth
 
 # this will ask user to input
