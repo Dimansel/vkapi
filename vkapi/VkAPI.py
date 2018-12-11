@@ -7,7 +7,6 @@ class VkAPI:
     
     def __init__(self, cid, access_token, token_time, expire_time, uid, api_version):
         self.cid = cid
-        self.authorized = not not access_token  #TODO: this should be a function!! not a variable
         self.access_token = access_token
         self.token_time = token_time
         self.expire_time = expire_time
@@ -37,8 +36,11 @@ class VkAPI:
                     data['api_version'])
         return api
 
+    def authorized(self):
+        return not not self.access_token
+
     def is_token_expired(self):
-        if not self.authorized:
+        if not self.authorized():
             return False
         if self.expire_time == 0:
             return False
@@ -48,7 +50,7 @@ class VkAPI:
 
     def send_request(self, method, params={}, access_token=True):
         if access_token:
-            if not self.authorized:
+            if not self.authorized():
                 raise vkapi.VkAuth.UnauthorizedException('You are not authorized...')
             if self.is_token_expired():
                 raise vkapi.VkAuth.UnauthorizedException('Your access token has expired...')
@@ -100,6 +102,7 @@ class VkAPI:
                     return
         return response['response']
 
+    # Method wrappers of a doubtful usefulness
     def users_get(self, uids, fields, access_token = True):
         params = {'user_ids': uids, 'fields': fields}
         return self.send_request('users.get', params, access_token)
